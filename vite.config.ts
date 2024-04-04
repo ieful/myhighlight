@@ -30,7 +30,7 @@ export default defineConfig({
     outDir: '../dist', // 指定输出目录
     rollupOptions: {
       input: {
-        'popup': '@/pages/index.html',
+        'popup': '@/pages/popup/index.html',
       }
     }
   }

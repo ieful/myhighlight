@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && rm -rf dist && vite build",
+    "build": "tsc && rm -rf dist && vite build && npm run content",
+    "content": "vite build --config vite.content.ts",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/preset-react": "^7.24.1",
+    "@rollup/plugin-babel": "^6.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
