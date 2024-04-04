@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "AI Assistant",
+  "version": "1.0.0",
+  "description": "A basic example extension with only required keys",
+  "author": "gs1521adc@buaa.edu.cn",
+  "homepage_url": "https://blog.xiaoyu.work",
+  "icons": {
+    "48": "images/icon-32.png",
+    "128": "images/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content-script.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*",
+        "file:///*/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "images/icon-32.png",
+      "32": "images/icon-32.png",
+      "48": "images/icon-32.png",
+      "128": "images/icon-128.png"
+    },
+    "default_title": "Click Me",
+    "default_popup": "pages/index.html"
+  },
+  "permissions": ["scripting", "activeTab", "storage"]
+}
