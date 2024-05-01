@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import babel from '@rollup/plugin-babel'
+import babel from '@rollup/plugin-babel';
 import path from 'path';
 
 
@@ -27,7 +27,8 @@ export default defineConfig({
             },
             output: {
                 entryFileNames: '[name].js',
-                assetFileNames: 'content.[ext]'
+                format: 'iife',
+                // assetFileNames: 'content.[ext]'
             }
         }
     }

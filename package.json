@@ -6,14 +6,20 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && rm -rf dist && vite build && npm run content",
-    "content": "vite build --config vite.content.ts",
+    "content": "vite build --config vite.content.ts --watch",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-react": "^7.24.1",
+    "@nextui-org/react": "^2.2.10",
     "@rollup/plugin-babel": "^6.0.4",
+    "cheerio": "^1.0.0-rc.12",
+    "framer-motion": "^11.0.24",
+    "less": "^4.2.0",
+    "mobx": "^6.12.3",
+    "mobx-react": "^9.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -27,6 +33,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
     "rollup-plugin-copy": "^3.5.0",
+    "tailwindcss": "^3.4.3",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
