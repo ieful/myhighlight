@@ -5,7 +5,6 @@ import Note from "@/pages/note/index.tsx";
 // import '../output.css';
 
 function injectShandowDom() {
-    console.log('aaa');
     const rootElement = document.createElement('div');
     rootElement.id = 'aiAssistRoot2';
     // 防止重复注入

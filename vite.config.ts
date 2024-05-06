@@ -11,7 +11,7 @@ export default defineConfig({
     react(),
     copy({
       targets: [
-        // 这里列出你需要拷贝的文件或目录
+        // 需要拷贝的文件或目录
         { src: 'src/extend/manifest.json', dest: 'dist' },
         { src: 'src/extend/service-worker.js', dest: 'dist' },
         { src: 'src/extend/content-script.js', dest: 'dist' },

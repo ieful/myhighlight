@@ -4,7 +4,6 @@ import {Button, ButtonGroup} from "@nextui-org/react";
 import store from '../../store';
 import { observer } from "mobx-react";
 import {ColorPencil} from './icons';
-
 import '../../output.css';
 
 const Note = () => {
@@ -90,39 +89,11 @@ const Note = () => {
         }
     }
 
-    // function isValidHTML(html) {
-    //
-    //     return html.match(/<([a-z][\s\S]*)>.*<\/\1>/i);
-    //
-    //     try {
-    //         const $ = cheerio.load(html);
-    //         // 如果成功解析，则说明 HTML 是合法的
-    //         return true;
-    //     } catch (error) {
-    //         // 解析失败，说明 HTML 存在问题
-    //         return false;
-    //     }
-    // }
-
-    // function containsPartialTag(range) {
-    //     // 获取 Range 的起始节点和结束节点
-    //     let startNode = range.startContainer;
-    //     let endNode = range.endContainer;
-    //
-    //     // 如果起始节点或结束节点是文本节点，则返回 true，表示范围包含了不完整的标签
-    //     if (startNode.nodeType === Node.TEXT_NODE || endNode.nodeType === Node.TEXT_NODE) {
-    //         return true;
-    //     }
-    //
-    //     // 否则，返回 false，表示范围包含了完整的 HTML 元素
-    //     return false;
-    // }
-
+    // 递归寻找
     function recursionFind(node: any, target: any) {
         if (node === target) {
             return node;
         }
-
         for (let i = 0; i < node.childNodes.length; i++) {
             const foundNode: any = recursionFind(node.childNodes[i], target);
             if (foundNode) {
@@ -131,12 +102,10 @@ const Note = () => {
         }
         return null;
     }
-    //
-    // function makeSurround(range, highLightSpan) {
-    //     range.surroundContents(highLightSpan);
-    // }
 
+    // 给range配置自己对应的 highlightedSpan 用于后续的 surroundContents
     function colorRange(node: any, index: number, range: any, startIndex: number, endIndex: number) {
+        // 头节点
         if (index === startIndex) {
             const range1 = new Range();
             range1.setStart(range.startContainer, range.startOffset);
@@ -145,6 +114,7 @@ const Note = () => {
             highlightedSpan.style.backgroundColor = '#f6d365';
             console.log({range: range1, highlightedSpan})
             return {range: range1, highlightedSpan};
+        // 尾节点
         } else if (index === endIndex) {
             const range2 = new Range();
             range2.setStart(range.endContainer, 0);
@@ -154,6 +124,7 @@ const Note = () => {
             console.log({range: range2, highlightedSpan})
             return {range: range2, highlightedSpan};
         } else {
+        // 中间节点
             const highlightedSpan = document.createElement('span');
             highlightedSpan.style.backgroundColor = '#f6d365';
             const range = new Range();
@@ -170,22 +141,18 @@ const Note = () => {
         }
     }
 
-
+    // 执行命令
     function runOrder(order: string) {
+        // 高亮
         if (order === 'Highlight') {
             const selection = document.getSelection()!;
             if (selection.rangeCount > 0) {
                 const range = selection.getRangeAt(0);
-                // const {commonAncestorContainer, startContainer, startOffset, endContainer, endOffset} = range;
                 console.log('range', range);
-
                 // 根据nodeType属性判断是文本节点还是元素节点，其中文本节点nodeType是3，元素节点nodeType是1
-                // console.log('startContainer.nodeType:', startContainer.nodeType === 3 ? '文本节点' : '元素节点')
-                // console.log('endContainer.nodeType:', endContainer.nodeType === 3 ? '文本节点' : '元素节点')
-
 
                 if (range.startContainer === range.endContainer) {
-                    console.log('startContainer === endContainer');
+                    console.log('1111111111111111   startContainer === endContainer');
                     const rangeInOneContainer = new Range();
                     rangeInOneContainer.setStart(range.startContainer, range.startOffset);
                     rangeInOneContainer.setEnd(range.endContainer,  range.endOffset);
@@ -193,13 +160,14 @@ const Note = () => {
                     highlightedSpan.style.backgroundColor = '#f6d365';
                     rangeInOneContainer.surroundContents(highlightedSpan);
                 } else {
+                    console.log('2222222222222   startContainer !== endContainer');
                     const commonAncestorContainer = range.commonAncestorContainer;
-                    console.log('commonAncestorContainer is', commonAncestorContainer);
                     let startIndex = 0;
                     let endIndex = 0;
+                    // 遍历公共父节点的每个子节点，找到startIndex和endIndex
                     for (let i = 0; i < commonAncestorContainer.childNodes.length; i++) {
                         const node = commonAncestorContainer.childNodes[i];
-                        console.log(`node is ${node}; nodeType is ${node.nodeType}`);
+                        // console.log(`node is ${node}; nodeType is ${node.nodeType}`);
                         if (recursionFind(node, range.startContainer) !== null) {
                             console.log(`包含 range.startContainer 的节点是 ${node}; 索引是 ${i} 节点类型是 ${node.nodeType}`);
                             startIndex = i;
@@ -210,43 +178,22 @@ const Note = () => {
                             break
                         }
                     }
-
                     console.log('startIndex is', startIndex);
                     console.log('endIndex is', endIndex);
-
                     const arr = [];
-
                     // 3, 5
                     for (let i = startIndex; i <= endIndex; i++) {
+                        // 排除换行节点
                         if (commonAncestorContainer.childNodes[i]?.nodeValue?.includes("\n")) {
                             continue;
                         }
                         arr.push(colorRange(commonAncestorContainer.childNodes[i], i, range, startIndex, endIndex));
                     }
-
                     console.log('arr is', arr);
-
+                    // 给匹配好highlightedSpan的range挨个调用surroundContents设置高亮背景
                     arr.forEach(item => {
                         item.range.surroundContents(item.highlightedSpan)
                     })
-
-                    // const range1 = new Range();
-                    // const range2 = new Range();
-                    // console.log('range.startContainer.toString().length', range.startContainer.toString().length)
-                    // range1.setStart(range.startContainer, range.startOffset);
-                    // range1.setEnd(range.startContainer, range.startContainer.data.length);
-
-                    // range2.setStart(range.endContainer, 0);
-                    // range2.setEnd(range.endContainer, range.endOffset);
-                    //
-                    // const highlightedSpan = document.createElement('span');
-                    // highlightedSpan.style.backgroundColor = '#f6d365';
-                    //
-                    // const highlightedSpan2 = document.createElement('span');
-                    // highlightedSpan2.style.backgroundColor = '#f6d365';
-
-                    // range1.surroundContents(highlightedSpan);
-                    // range2.surroundContents(highlightedSpan2);
                 }
             }
         }
