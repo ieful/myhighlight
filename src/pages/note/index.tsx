@@ -89,6 +89,27 @@ const Note = () => {
         }
     }
 
+
+    const selectedNodesArr: any = [];
+
+    // 递归遍历
+    function visitNode(node: any) {
+        if (node.nodeType === 3) {
+            selectedNodesArr.push(node);
+        } else if (node.nodeType === 1) {
+            let childNotes = node.childNodes;
+            for (let i = 0; i < childNotes.length; i++) {
+                let child = childNotes[i];
+                visitNode(child);
+            }
+        }
+    }
+
+
+    function dfsSearch(rootNode: any) {
+        visitNode(rootNode);
+    }
+
     // 递归寻找
     function recursionFind(node: any, target: any) {
         if (node === target) {
@@ -125,19 +146,20 @@ const Note = () => {
             return {range: range2, highlightedSpan};
         } else {
         // 中间节点
-            const highlightedSpan = document.createElement('span');
-            highlightedSpan.style.backgroundColor = '#f6d365';
-            const range = new Range();
-            // 文本
-            if (node.nodeType === 3) {
-                range.setStart(node, 0);
-                range.setEnd(node, node.length);
-            } else {
-                range.setStart(node, 0);
-                range.setEnd(node, node.childNodes.length);
-            }
-            console.log({range, highlightedSpan})
-            return {range, highlightedSpan}
+            dfsSearch(node);
+        //     const highlightedSpan = document.createElement('span');
+        //     highlightedSpan.style.backgroundColor = '#f6d365';
+        //     const range = new Range();
+        //     // 文本
+        //     if (node.nodeType === 3) {
+        //         range.setStart(node, 0);
+        //         range.setEnd(node, node.length);
+        //     } else {
+        //         range.setStart(node, 0);
+        //         range.setEnd(node, node.childNodes.length);
+        //     }
+        //     console.log({range, highlightedSpan})
+        //     return {range, highlightedSpan}
         }
     }
 
@@ -193,7 +215,15 @@ const Note = () => {
                     console.log('arr is', arr);
                     // 给匹配好highlightedSpan的range挨个调用surroundContents设置高亮背景
                     arr.forEach(item => {
-                        item.range.surroundContents(item.highlightedSpan)
+                        item?.range.surroundContents(item?.highlightedSpan)
+                    })
+                    selectedNodesArr.forEach((node: any) => {
+                            const highlightedSpan = document.createElement('span');
+                            highlightedSpan.style.backgroundColor = '#f6d365';
+                            const range = new Range();
+                            range.setStart(node, 0);
+                            range.setEnd(node, node.textContent.length);
+                            range.surroundContents(highlightedSpan);
                     })
                 }
             }
