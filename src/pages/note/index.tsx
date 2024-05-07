@@ -162,12 +162,13 @@ const Note = () => {
                 } else {
                     console.log('2222222222222   startContainer !== endContainer');
                     const commonAncestorContainer = range.commonAncestorContainer;
+                    console.log(`公共祖先节点是`, commonAncestorContainer)
                     let startIndex = 0;
                     let endIndex = 0;
                     // 遍历公共父节点的每个子节点，找到startIndex和endIndex
                     for (let i = 0; i < commonAncestorContainer.childNodes.length; i++) {
                         const node = commonAncestorContainer.childNodes[i];
-                        // console.log(`node is ${node}; nodeType is ${node.nodeType}`);
+                        console.log(`第${i}个节点是`, node,  `节点类型 是 ${node.nodeType === 3 ? '文本节点' : '标签节点'} 节点内容是`, node.textContent);
                         if (recursionFind(node, range.startContainer) !== null) {
                             console.log(`包含 range.startContainer 的节点是 ${node}; 索引是 ${i} 节点类型是 ${node.nodeType}`);
                             startIndex = i;
@@ -178,8 +179,8 @@ const Note = () => {
                             break
                         }
                     }
-                    console.log('startIndex is', startIndex);
-                    console.log('endIndex is', endIndex);
+                    console.log('startIndex is', startIndex); // 3
+                    console.log('endIndex is', endIndex); // 5
                     const arr = [];
                     // 3, 5
                     for (let i = startIndex; i <= endIndex; i++) {
