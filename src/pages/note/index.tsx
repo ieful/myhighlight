@@ -110,6 +110,20 @@ const Note = () => {
     //     visitNode(rootNode);
     // }
 
+
+    function myDfsText(firstNode) {
+        let textArr = []
+        function dfsText(node: any) {
+            if (node.nodeType === 3) {
+                textArr.push(node)
+            }
+            for (let i = 0; i < node.childNodes.length; i++) {
+                dfsText(node.childNodes[i])
+            }
+        }
+        dfsText(firstNode)
+    }
+
     let textArr: any[] = [];
 
     function dfsText(node: any) {
