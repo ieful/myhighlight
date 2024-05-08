@@ -90,24 +90,47 @@ const Note = () => {
     }
 
 
-    const selectedNodesArr: any = [];
+    // const selectedNodesArr: any = [];
 
     // 递归遍历
-    function visitNode(node: any) {
+    // function visitNode(node: any) {
+    //     if (node.nodeType === 3) {
+    //         selectedNodesArr.push(node);
+    //     } else if (node.nodeType === 1) {
+    //         let childNotes = node.childNodes;
+    //         for (let i = 0; i < childNotes.length; i++) {
+    //             let child = childNotes[i];
+    //             visitNode(child);
+    //         }
+    //     }
+    // }
+
+
+    // function dfsSearch(rootNode: any) {
+    //     visitNode(rootNode);
+    // }
+
+    let textArr: any[] = [];
+
+    function dfsText(node: any) {
         if (node.nodeType === 3) {
-            selectedNodesArr.push(node);
-        } else if (node.nodeType === 1) {
-            let childNotes = node.childNodes;
-            for (let i = 0; i < childNotes.length; i++) {
-                let child = childNotes[i];
-                visitNode(child);
-            }
+            textArr.push(node)
+        }
+        for (let i = 0; i < node.childNodes.length; i++) {
+            dfsText(node.childNodes[i]);
         }
     }
 
+    function doColor() {
+        for (let i = 0; i < textArr.length; i++) {
+            let currentTextNode = textArr[i]
+            let range = new Range();
+            range.setStart(currentTextNode, 0)
+            range.setEnd(currentTextNode, currentTextNode.textContent.length)
 
-    function dfsSearch(rootNode: any) {
-        visitNode(rootNode);
+            let mark = document.createElement('mark');
+            range.surroundContents(mark);
+        }
     }
 
     // 递归寻找
@@ -125,43 +148,45 @@ const Note = () => {
     }
 
     // 给range配置自己对应的 highlightedSpan 用于后续的 surroundContents
-    function colorRange(node: any, index: number, range: any, startIndex: number, endIndex: number) {
-        // 头节点
-        if (index === startIndex) {
-            const range1 = new Range();
-            range1.setStart(range.startContainer, range.startOffset);
-            range1.setEnd(range.startContainer, range.startContainer.data.length);
-            const highlightedSpan = document.createElement('span');
-            highlightedSpan.style.backgroundColor = '#f6d365';
-            console.log({range: range1, highlightedSpan})
-            return {range: range1, highlightedSpan};
-        // 尾节点
-        } else if (index === endIndex) {
-            const range2 = new Range();
-            range2.setStart(range.endContainer, 0);
-            range2.setEnd(range.endContainer, range.endOffset);
-            const highlightedSpan = document.createElement('span');
-            highlightedSpan.style.backgroundColor = '#f6d365';
-            console.log({range: range2, highlightedSpan})
-            return {range: range2, highlightedSpan};
-        } else {
-        // 中间节点
-            dfsSearch(node);
-        //     const highlightedSpan = document.createElement('span');
-        //     highlightedSpan.style.backgroundColor = '#f6d365';
-        //     const range = new Range();
-        //     // 文本
-        //     if (node.nodeType === 3) {
-        //         range.setStart(node, 0);
-        //         range.setEnd(node, node.length);
-        //     } else {
-        //         range.setStart(node, 0);
-        //         range.setEnd(node, node.childNodes.length);
-        //     }
-        //     console.log({range, highlightedSpan})
-        //     return {range, highlightedSpan}
-        }
-    }
+    // function colorRange(node: any, index: number, range: any, startIndex: number, endIndex: number) {
+    //     console.log(node, index)
+    //     // 头节点
+    //     if (index === startIndex) {
+    //         const range1 = new Range();
+    //         range1.setStart(range.startContainer, range.startOffset);
+    //         range1.setEnd(range.startContainer, range.startContainer.data.length);
+    //         const highlightedSpan = document.createElement('span');
+    //         highlightedSpan.style.backgroundColor = '#f6d365';
+    //         console.log({range: range1, highlightedSpan})
+    //         return {range: range1, highlightedSpan};
+    //     // 尾节点
+    //     } else if (index === endIndex) {
+    //         const range2 = new Range();
+    //         range2.setStart(range.endContainer, 0);
+    //         range2.setEnd(range.endContainer, range.endOffset);
+    //         const highlightedSpan = document.createElement('span');
+    //         highlightedSpan.style.backgroundColor = '#f6d365';
+    //         console.log({range: range2, highlightedSpan})
+    //         return {range: range2, highlightedSpan};
+    //     } else {
+    //         console.log('中间节点是', node)
+    //     // 中间节点
+    //     //     dfsSearch(node);
+    //     //     const highlightedSpan = document.createElement('span');
+    //     //     highlightedSpan.style.backgroundColor = '#f6d365';
+    //     //     const range = new Range();
+    //     //     // 文本
+    //     //     if (node.nodeType === 3) {
+    //     //         range.setStart(node, 0);
+    //     //         range.setEnd(node, node.length);
+    //     //     } else {
+    //     //         range.setStart(node, 0);
+    //     //         range.setEnd(node, node.childNodes.length);
+    //     //     }
+    //     //     console.log({range, highlightedSpan})
+    //     //     return {range, highlightedSpan}
+    //     }
+    // }
 
     // 执行命令
     function runOrder(order: string) {
@@ -203,28 +228,32 @@ const Note = () => {
                     }
                     console.log('startIndex is', startIndex); // 3
                     console.log('endIndex is', endIndex); // 5
-                    const arr = [];
+                    // const arr = [];
                     // 3, 5
                     for (let i = startIndex; i <= endIndex; i++) {
                         // 排除换行节点
                         if (commonAncestorContainer.childNodes[i]?.nodeValue?.includes("\n")) {
                             continue;
                         }
-                        arr.push(colorRange(commonAncestorContainer.childNodes[i], i, range, startIndex, endIndex));
+                        dfsText(commonAncestorContainer.childNodes[i]);
+
+                        // arr.push(colorRange(commonAncestorContainer.childNodes[i], i, range, startIndex, endIndex));
                     }
-                    console.log('arr is', arr);
+                    doColor();
+
+                    // console.log('arr is', arr);
                     // 给匹配好highlightedSpan的range挨个调用surroundContents设置高亮背景
-                    arr.forEach(item => {
-                        item?.range.surroundContents(item?.highlightedSpan)
-                    })
-                    selectedNodesArr.forEach((node: any) => {
-                            const highlightedSpan = document.createElement('span');
-                            highlightedSpan.style.backgroundColor = '#f6d365';
-                            const range = new Range();
-                            range.setStart(node, 0);
-                            range.setEnd(node, node.textContent.length);
-                            range.surroundContents(highlightedSpan);
-                    })
+                    // arr.forEach(item => {
+                    //     item?.range.surroundContents(item?.highlightedSpan)
+                    // })
+                    // selectedNodesArr.forEach((node: any) => {
+                    //         const highlightedSpan = document.createElement('span');
+                    //         highlightedSpan.style.backgroundColor = '#f6d365';
+                    //         const range = new Range();
+                    //         range.setStart(node, 0);
+                    //         range.setEnd(node, node.textContent.length);
+                    //         range.surroundContents(highlightedSpan);
+                    // })
                 }
             }
         }
