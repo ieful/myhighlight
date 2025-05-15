@@ -8,8 +8,12 @@ class Assistant {
         left: -3000
     }
 
+    highlightInstance = new Highlight();
+
     // 选中的内容
     selectedText: string | undefined = '';
+
+    showTrash = false;
 
     // 显示功能条
     get showCommandbar() {
@@ -27,7 +31,9 @@ class Assistant {
     constructor() {
         makeObservable(this, {
             position: observable,
+            highlightInstance: observable,
             selectedText: observable,
+            showTrash: observable,
             showCommandbar: computed,
             showFloatPanel: observable,
             hasSelection: computed,

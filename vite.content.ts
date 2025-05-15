@@ -23,7 +23,7 @@ export default defineConfig({
         outDir: '../dist', // 指定输出目录
         rollupOptions: {
             input: {
-                'content-script': 'src/extend/content-script.js'
+                'content-script': 'src/crx/content-script.js'
             },
             output: {
                 entryFileNames: '[name].js',

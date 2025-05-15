@@ -12,9 +12,9 @@ export default defineConfig({
     copy({
       targets: [
         // 需要拷贝的文件或目录
-        { src: 'src/extend/manifest.json', dest: 'dist' },
-        { src: 'src/extend/service-worker.js', dest: 'dist' },
-        { src: 'src/extend/content-script.js', dest: 'dist' },
+        { src: 'src/crx/manifest.json', dest: 'dist' },
+        { src: 'src/crx/service-worker.js', dest: 'dist' },
+        { src: 'src/crx/content-script.js', dest: 'dist' },
         { src: 'src/assets/icon-32.png', dest: 'dist/images' },
         { src: 'src/assets/icon-128.png', dest: 'dist/images' },
       ],

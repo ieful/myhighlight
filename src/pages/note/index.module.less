@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+::highlight(text-highlight) {
+  background-color: #f6d365;
+}
+
 .commandbar {
   position: fixed;
-  //left: -300px;
   z-index: 9999;
+  //left: -300px;
   //transition: none;
   //width: max-content;
+}
+
+.trashbar {
+  position: fixed;
+  z-index: 9999;
 }

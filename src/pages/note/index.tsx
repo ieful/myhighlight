@@ -9,7 +9,7 @@ import '../../output.css';
 const Note = () => {
 
     const commandbarRef = useRef<HTMLDivElement>(null);
-    // const [isOpen, setIsOpen] = useState(false);
+    const trashbarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         document.addEventListener('mouseup', handleMouseUp);
@@ -46,27 +46,27 @@ const Note = () => {
             }
         }
         const client = txt?.getRangeAt(0)?.getClientRects();
-        const x = client?.[0]?.x + client?.[0]?.width;
+        console.log('txt', txt);
+        console.log('client', client);
+        const x = client?.[0]?.x + client?.[0]?.width; // 左起距离+自身宽度 = 右边界的x坐标(视口参考系)
         return { txt: txt?.toString()?.trim(), lines: client?.length, x: x };
     }
 
     const handleMouseUp = (e: any) => {
-        if (e.button !== 0) {
-            return
-        }
+        if (e.button !== 0) return;
         const { txt, lines, x } = funGetSelectTxt();
         e = e || window.event;
-
         if (txt) {
             store.selectedText = txt;
         }
-        const clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
-        const clientWidth = document.documentElement.clientWidth || document.body.clientWidth;
-        const clientX = (lines === 1 && x) || e.clientX;
+        const clientHeight = document.documentElement.clientHeight || document.body.clientHeight; // 视口高度
+        const clientWidth = document.documentElement.clientWidth || document.body.clientWidth; // 视口宽度
+        const clientX = (lines === 1 && x) || e.clientX; // 最右侧边界的x坐标
 
         setTimeout(() => {
+            // 决定命令面板显示的位置
             if (commandbarRef.current) {
-                const width = commandbarRef.current.clientWidth;
+                const width = commandbarRef.current.clientWidth; // 命令面板宽度
                 let left = clientX + width < clientWidth ? clientX + 3 : clientWidth - width;
                 let top = e.clientY + 50 < clientHeight ? e.clientY - 42 : clientHeight - 40;
 
@@ -76,9 +76,10 @@ const Note = () => {
                 if (left < 0) {
                     left = 10;
                 }
+                // 设置命令面板位置
                 commandbarRef.current.style.top = top + 'px';
                 commandbarRef.current.style.left = left + 'px';
-                store.position = {top, left};
+                store.position = {top, left}; // 同步更新store中的位置数据
             }
         }, 0)
     }
@@ -124,42 +125,42 @@ const Note = () => {
     //     dfsText(firstNode)
     // }
 
-    let textArr: any[] = [];
+    // let textArr: any[] = [];
 
-    function dfsText(node: any) {
-        if (node.nodeType === 3) {
-            textArr.push(node)
-        }
-        for (let i = 0; i < node.childNodes.length; i++) {
-            dfsText(node.childNodes[i]);
-        }
-    }
+    // function dfsText(node: any) {
+    //     if (node.nodeType === 3) {
+    //         textArr.push(node)
+    //     }
+    //     for (let i = 0; i < node.childNodes.length; i++) {
+    //         dfsText(node.childNodes[i]);
+    //     }
+    // }
 
-    function doColor() {
-        for (let i = 0; i < textArr.length; i++) {
-            let currentTextNode = textArr[i]
-            let range = new Range();
-            range.setStart(currentTextNode, 0)
-            range.setEnd(currentTextNode, currentTextNode.textContent.length)
-
-            let mark = document.createElement('mark');
-            range.surroundContents(mark);
-        }
-    }
+    // function doColor() {
+    //     for (let i = 0; i < textArr.length; i++) {
+    //         let currentTextNode = textArr[i]
+    //         let range = new Range();
+    //         range.setStart(currentTextNode, 0)
+    //         range.setEnd(currentTextNode, currentTextNode.textContent.length)
+    //
+    //         let mark = document.createElement('mark');
+    //         range.surroundContents(mark);
+    //     }
+    // }
 
     // 递归寻找
-    function recursionFind(node: any, target: any) {
-        if (node === target) {
-            return node;
-        }
-        for (let i = 0; i < node.childNodes.length; i++) {
-            const foundNode: any = recursionFind(node.childNodes[i], target);
-            if (foundNode) {
-                return foundNode;
-            }
-        }
-        return null;
-    }
+    // function recursionFind(node: any, target: any) {
+    //     if (node === target) {
+    //         return node;
+    //     }
+    //     for (let i = 0; i < node.childNodes.length; i++) {
+    //         const foundNode: any = recursionFind(node.childNodes[i], target);
+    //         if (foundNode) {
+    //             return foundNode;
+    //         }
+    //     }
+    //     return null;
+    // }
 
     // 给range配置自己对应的 highlightedSpan 用于后续的 surroundContents
     // function colorRange(node: any, index: number, range: any, startIndex: number, endIndex: number) {
@@ -202,6 +203,70 @@ const Note = () => {
     //     }
     // }
 
+    // funciton getPositionFromRange(r) {
+    //     let n = r.commonAncestorContainer;
+    //     n.nodeType === Node.TEXT_NODE && (n = n.parentElement);
+    //     let o = ""
+    //         , a = null
+    //         , i = (r.startContainer.nodeValue ? r.startContainer : r.startContainer.nextSibling) ?? r.startContainer
+    //         , s = i.nodeValue || ""
+    //         , l = r.startOffset;
+    //     if (l >= s.length) {
+    //         let g = r.toString().trim().slice(0, BB)
+    //             , b = Loe(g, n);
+    //         if (b) {
+    //             let w = nxt(b).filter(A => !!A.nodeValue?.trim())[0];
+    //             w && (i = w,
+    //                 s = w.nodeValue || "",
+    //                 l = 0)
+    //         }
+    //     }
+    //     if (s.trim().length < Q4 && (a = this.findUniqueParentNode(rxt(i)),
+    //         a)) {
+    //         let g = a.innerText
+    //             , b = g.indexOf(s.trim());
+    //         b > Q4 ? o = g.slice(b - Q4, b + Q4) : o = g.slice(0, BB)
+    //     }
+    //     let c = ""
+    //         , d = null
+    //         , u = r.endContainer.nodeValue || ""
+    //         , m = r.endOffset
+    //         , p = r.endContainer;
+    //     if (m === 0 || p.nodeType !== Node.TEXT_NODE) {
+    //         let g = r.toString().trim().slice(-BB)
+    //             , b = Loe(g, n);
+    //         if (b) {
+    //             let v = nxt(b).filter(A => !!A.nodeValue?.trim())
+    //                 , w = v[v.length - 1];
+    //             w && (p = w,
+    //                 u = w.nodeValue || "",
+    //                 m = u.length)
+    //         }
+    //     }
+    //     if (u.trim().length < Q4 && (d = this.findUniqueParentNode(rxt(p)),
+    //         d)) {
+    //         let g = d.innerText
+    //             , b = g.indexOf(u.trim());
+    //         b > Q4 ? c = g.slice(b - Q4, b + Q4) : c = g.slice(0, BB)
+    //     }
+    //     let f = ext(s, i, a)
+    //         , h = 0;
+    //     u && (h = ext(u, p, d));
+    //     let y = {
+    //         startOffset: l,
+    //         startContext: s.slice(0, BB),
+    //         startContextOffset: f,
+    //         startContainerContext: o,
+    //         endOffset: m,
+    //         endContext: u.slice(0, BB),
+    //         endContextOffset: h,
+    //         endContainerContext: c
+    //     };
+    //     return r.setStart(i, l),
+    //         r.setEnd(p, m),
+    //         y
+    // }
+
     // 执行命令
     function runOrder(order: string) {
         // 高亮
@@ -210,64 +275,43 @@ const Note = () => {
             if (selection.rangeCount > 0) {
                 const range = selection.getRangeAt(0);
                 console.log('range', range);
-                // 根据nodeType属性判断是文本节点还是元素节点，其中文本节点nodeType是3，元素节点nodeType是1
+                store.highlightInstance.add(range);
+                CSS.highlights.set("text-highlight", store.highlightInstance);
+                store.selectedText = '';
+                selection.removeAllRanges();
 
-                if (range.startContainer === range.endContainer) {
-                    console.log('1111111111111111   startContainer === endContainer');
-                    const rangeInOneContainer = new Range();
-                    rangeInOneContainer.setStart(range.startContainer, range.startOffset);
-                    rangeInOneContainer.setEnd(range.endContainer,  range.endOffset);
-                    const highlightedSpan = document.createElement('span');
-                    highlightedSpan.style.backgroundColor = '#f6d365';
-                    rangeInOneContainer.surroundContents(highlightedSpan);
-                } else {
-                    console.log('2222222222222   startContainer !== endContainer');
-                    const commonAncestorContainer = range.commonAncestorContainer;
-                    console.log(`公共祖先节点是`, commonAncestorContainer)
-                    let startIndex = 0;
-                    let endIndex = 0;
-                    // 遍历公共父节点的每个子节点，找到startIndex和endIndex
-                    for (let i = 0; i < commonAncestorContainer.childNodes.length; i++) {
-                        const node = commonAncestorContainer.childNodes[i];
-                        console.log(`第${i}个节点是`, node,  `节点类型 是 ${node.nodeType === 3 ? '文本节点' : '标签节点'} 节点内容是`, node.textContent);
-                        if (recursionFind(node, range.startContainer) !== null) {
-                            console.log(`包含 range.startContainer 的节点是 ${node}; 索引是 ${i} 节点类型是 ${node.nodeType}`);
-                            startIndex = i;
-                        }
-                        if (recursionFind(node, range.endContainer) !== null) {
-                            console.log(`包含 range.endContainer 的 节点 是 ${node}; 索引是 ${i} 节点类型是 ${node.nodeType}`);
-                            endIndex = i;
-                            break
-                        }
-                    }
-                    console.log('startIndex is', startIndex); // 3
-                    console.log('endIndex is', endIndex); // 5
-                    // const arr = [];
-                    // 3, 5
-                    for (let i = startIndex; i <= endIndex; i++) {
-                        // 排除换行节点
-                        if (commonAncestorContainer.childNodes[i]?.nodeValue?.includes("\n")) {
-                            continue;
-                        }
-                        dfsText(commonAncestorContainer.childNodes[i]);
-                        // arr.push(colorRange(commonAncestorContainer.childNodes[i], i, range, startIndex, endIndex));
-                    }
-                    doColor();
+                // 处理鼠标事件绑定
+                const ancestor = range.commonAncestorContainer;
+                const parentElement = ancestor.nodeType  === Node.TEXT_NODE ? ancestor.parentElement! : ancestor!;
 
-                    // console.log('arr is', arr);
-                    // 给匹配好highlightedSpan的range挨个调用surroundContents设置高亮背景
-                    // arr.forEach(item => {
-                    //     item?.range.surroundContents(item?.highlightedSpan)
-                    // })
-                    // selectedNodesArr.forEach((node: any) => {
-                    //         const highlightedSpan = document.createElement('span');
-                    //         highlightedSpan.style.backgroundColor = '#f6d365';
-                    //         const range = new Range();
-                    //         range.setStart(node, 0);
-                    //         range.setEnd(node, node.textContent.length);
-                    //         range.surroundContents(highlightedSpan);
-                    // })
-                }
+                parentElement.addEventListener('mouseover', (e: any) => {
+                    console.log('mouseover', e);
+                    // 获取鼠标坐标对应的文本位置
+                    // @ts-ignore
+                    const pos = document.caretPositionFromPoint(e.clientX,  e.clientY);
+                    if (!pos) return;
+                    // 遍历所有高亮 Range 检测是否包含该位置
+                    const isInHighlight = range.isPointInRange(pos.offsetNode,  pos.offset);
+                    if (isInHighlight) {
+                        store.showTrash = true;
+                        // parentElement.setAttribute('data-xiaoyu-id', Date.now().toString());
+                        console.log('显示移除提示');
+                        let top = e.clientY - 55;
+                        let left = e.clientX - 50;
+                        if (trashbarRef.current) {
+                            trashbarRef.current.style.top = top + 'px';
+                            trashbarRef.current.style.left = left + 'px';
+                            store.position = {top, left};
+                        }
+                    } else {
+                        console.log('隐藏提示');
+                        store.showTrash = false;
+                    }
+                })
+                parentElement.addEventListener('mouseout', (e: any) => {
+                    console.log('mouseout', e);
+                    // parentElement.removeAttribute('data-xiaoyu-id');
+                })
             }
         }
     }
@@ -357,18 +401,24 @@ const Note = () => {
                                 variant="shadow"
                                 className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
                                 onClick={() => runOrder('Highlight')}>
-                                <Trash/>
-                            </Button>
-                            <Button
-                                size='sm'
-                                radius="full"
-                                color="primary"
-                                variant="shadow"
-                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
-                                onClick={() => runOrder('Highlight')}>
                                 <Eraser/>
                             </Button>
                         </ButtonGroup>
+                    </div>
+                ) : null
+            }
+            {
+                store.showTrash ? (
+                    <div ref={trashbarRef} className={styles.trashbar}>
+                        <Button
+                            size='sm'
+                            radius="full"
+                            color="primary"
+                            variant="shadow"
+                            className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                            onClick={() => runOrder('Highlight')}>
+                            <Trash/>
+                        </Button>
                     </div>
                 ) : null
             }
