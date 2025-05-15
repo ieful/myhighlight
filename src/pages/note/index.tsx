@@ -3,7 +3,7 @@ import {useEffect, useRef} from "react";
 import {Button, ButtonGroup} from "@nextui-org/react";
 import store from '../../store';
 import { observer } from "mobx-react";
-import {ColorPencil} from './icons';
+import {Translate2, Pen2, Pencil, ColorPencil, FillPencil, FillPen, Pen, Translate, Trash, Eraser} from './icons';
 import '../../output.css';
 
 const Note = () => {
@@ -111,18 +111,18 @@ const Note = () => {
     // }
 
 
-    function myDfsText(firstNode) {
-        let textArr = []
-        function dfsText(node: any) {
-            if (node.nodeType === 3) {
-                textArr.push(node)
-            }
-            for (let i = 0; i < node.childNodes.length; i++) {
-                dfsText(node.childNodes[i])
-            }
-        }
-        dfsText(firstNode)
-    }
+    // function myDfsText(firstNode: any) {
+    //     let textArr = []
+    //     function dfsText(node: any) {
+    //         if (node.nodeType === 3) {
+    //             textArr.push(node)
+    //         }
+    //         for (let i = 0; i < node.childNodes.length; i++) {
+    //             dfsText(node.childNodes[i])
+    //         }
+    //     }
+    //     dfsText(firstNode)
+    // }
 
     let textArr: any[] = [];
 
@@ -250,7 +250,6 @@ const Note = () => {
                             continue;
                         }
                         dfsText(commonAncestorContainer.childNodes[i]);
-
                         // arr.push(colorRange(commonAncestorContainer.childNodes[i], i, range, startIndex, endIndex));
                     }
                     doColor();
@@ -285,7 +284,90 @@ const Note = () => {
                                 color="primary"
                                 variant="shadow"
                                 className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
-                                onClick={() => runOrder('Highlight')}><ColorPencil /></Button>
+                                onClick={() => runOrder('Highlight')}>
+                                <ColorPencil/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Translate2/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Pen2/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Pencil/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <FillPencil/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <FillPen/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Pen/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Translate/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Trash/>
+                            </Button>
+                            <Button
+                                size='sm'
+                                radius="full"
+                                color="primary"
+                                variant="shadow"
+                                className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+                                onClick={() => runOrder('Highlight')}>
+                                <Eraser/>
+                            </Button>
                         </ButtonGroup>
                     </div>
                 ) : null
